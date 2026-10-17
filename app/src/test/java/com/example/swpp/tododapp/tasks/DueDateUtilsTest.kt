@@ -263,6 +263,21 @@ class DueDateUtilsTest {
 
     // DueDateUtils.spec.md Tip 18.
     @Test
+    fun dueDateLabel_futureMonthEndBefore_returnsDDay() {
+        // Given
+        val dueDate: LocalDate? = LocalDate.parse("2026-01-30")
+        val today = LocalDate.parse("2026-01-30")
+        val isCompleted = false
+
+        // When
+        val label = dueDateLabel(dueDate, today, isCompleted)
+
+        // Then
+        assertEquals("D-Day", label)
+    }
+
+    // DueDateUtils.spec.md Tip 19.
+    @Test
     fun dueDateLabel_futureMonthEndAt_returnsDMinus1() {
         // Given
         val dueDate: LocalDate? = LocalDate.parse("2026-01-31")
@@ -276,7 +291,7 @@ class DueDateUtilsTest {
         assertEquals("D-1", label)
     }
 
-    // DueDateUtils.spec.md Tip 19.
+    // DueDateUtils.spec.md Tip 20.
     @Test
     fun dueDateLabel_futureMonthEndAfter_returnsDMinus2() {
         // Given
@@ -291,7 +306,7 @@ class DueDateUtilsTest {
         assertEquals("D-2", label)
     }
 
-    // DueDateUtils.spec.md Tip 20.
+    // DueDateUtils.spec.md Tip 21.
     @Test
     fun dueDateLabel_overdueMonthEndAt_returnsDPlus1() {
         // Given
@@ -306,7 +321,7 @@ class DueDateUtilsTest {
         assertEquals("D+1", label)
     }
 
-    // DueDateUtils.spec.md Tip 21.
+    // DueDateUtils.spec.md Tip 22.
     @Test
     fun dueDateLabel_overdueMonthEndBefore_returnsDPlus2() {
         // Given
@@ -321,7 +336,37 @@ class DueDateUtilsTest {
         assertEquals("D+2", label)
     }
 
-    // DueDateUtils.spec.md Tip 22.
+    // DueDateUtils.spec.md Tip 23.
+    @Test
+    fun dueDateLabel_overdueMonthEndAfter_returnsDDay() {
+        // Given
+        val dueDate: LocalDate? = LocalDate.parse("2026-02-01")
+        val today = LocalDate.parse("2026-02-01")
+        val isCompleted = false
+
+        // When
+        val label = dueDateLabel(dueDate, today, isCompleted)
+
+        // Then
+        assertEquals("D-Day", label)
+    }
+
+    // DueDateUtils.spec.md Tip 24.
+    @Test
+    fun dueDateLabel_futureYearEndBefore_returnsDDay() {
+        // Given
+        val dueDate: LocalDate? = LocalDate.parse("2026-12-30")
+        val today = LocalDate.parse("2026-12-30")
+        val isCompleted = false
+
+        // When
+        val label = dueDateLabel(dueDate, today, isCompleted)
+
+        // Then
+        assertEquals("D-Day", label)
+    }
+
+    // DueDateUtils.spec.md Tip 25.
     @Test
     fun dueDateLabel_futureYearEndAt_returnsDMinus1() {
         // Given
@@ -336,7 +381,7 @@ class DueDateUtilsTest {
         assertEquals("D-1", label)
     }
 
-    // DueDateUtils.spec.md Tip 23.
+    // DueDateUtils.spec.md Tip 26.
     @Test
     fun dueDateLabel_futureYearEndAfter_returnsDMinus2() {
         // Given
@@ -351,7 +396,7 @@ class DueDateUtilsTest {
         assertEquals("D-2", label)
     }
 
-    // DueDateUtils.spec.md Tip 24.
+    // DueDateUtils.spec.md Tip 27.
     @Test
     fun dueDateLabel_overdueYearEndAt_returnsDPlus1() {
         // Given
@@ -366,7 +411,7 @@ class DueDateUtilsTest {
         assertEquals("D+1", label)
     }
 
-    // DueDateUtils.spec.md Tip 25.
+    // DueDateUtils.spec.md Tip 28.
     @Test
     fun dueDateLabel_overdueYearEndBefore_returnsDPlus2() {
         // Given
@@ -381,7 +426,22 @@ class DueDateUtilsTest {
         assertEquals("D+2", label)
     }
 
-    // DueDateUtils.spec.md Tip 26.
+    // DueDateUtils.spec.md Tip 29.
+    @Test
+    fun dueDateLabel_overdueYearEndAfter_returnsDDay() {
+        // Given
+        val dueDate: LocalDate? = LocalDate.parse("2027-01-01")
+        val today = LocalDate.parse("2027-01-01")
+        val isCompleted = false
+
+        // When
+        val label = dueDateLabel(dueDate, today, isCompleted)
+
+        // Then
+        assertEquals("D-Day", label)
+    }
+
+    // DueDateUtils.spec.md Tip 30.
     @Test
     fun dueDateLabel_futureLeapDayBefore_returnsDMinus1() {
         // Given
@@ -396,7 +456,7 @@ class DueDateUtilsTest {
         assertEquals("D-1", label)
     }
 
-    // DueDateUtils.spec.md Tip 27.
+    // DueDateUtils.spec.md Tip 31.
     @Test
     fun dueDateLabel_futureLeapDayAt_returnsDMinus2() {
         // Given
@@ -411,7 +471,7 @@ class DueDateUtilsTest {
         assertEquals("D-2", label)
     }
 
-    // DueDateUtils.spec.md Tip 28.
+    // DueDateUtils.spec.md Tip 32.
     @Test
     fun dueDateLabel_futureLeapDayAfter_returnsDMinus3() {
         // Given
@@ -426,7 +486,7 @@ class DueDateUtilsTest {
         assertEquals("D-3", label)
     }
 
-    // DueDateUtils.spec.md Tip 29.
+    // DueDateUtils.spec.md Tip 33.
     @Test
     fun dueDateLabel_overdueLeapDayAt_returnsDPlus1() {
         // Given
@@ -441,7 +501,7 @@ class DueDateUtilsTest {
         assertEquals("D+1", label)
     }
 
-    // DueDateUtils.spec.md Tip 30.
+    // DueDateUtils.spec.md Tip 34.
     @Test
     fun dueDateLabel_overdueLeapDayBefore_returnsDPlus2() {
         // Given
@@ -456,7 +516,37 @@ class DueDateUtilsTest {
         assertEquals("D+2", label)
     }
 
-    // DueDateUtils.spec.md Tip 31.
+    // DueDateUtils.spec.md Tip 35.
+    @Test
+    fun dueDateLabel_overdueLeapDayAfter_returnsDDay() {
+        // Given
+        val dueDate: LocalDate? = LocalDate.parse("2028-03-01")
+        val today = LocalDate.parse("2028-03-01")
+        val isCompleted = false
+
+        // When
+        val label = dueDateLabel(dueDate, today, isCompleted)
+
+        // Then
+        assertEquals("D-Day", label)
+    }
+
+    // DueDateUtils.spec.md Tip 36.
+    @Test
+    fun dueDateLabel_nonLeapFebruaryEndBefore_returnsDDay() {
+        // Given
+        val dueDate: LocalDate? = LocalDate.parse("2027-02-27")
+        val today = LocalDate.parse("2027-02-27")
+        val isCompleted = false
+
+        // When
+        val label = dueDateLabel(dueDate, today, isCompleted)
+
+        // Then
+        assertEquals("D-Day", label)
+    }
+
+    // DueDateUtils.spec.md Tip 37.
     @Test
     fun dueDateLabel_nonLeapFebruaryEndAt_returnsDMinus1() {
         // Given
@@ -471,7 +561,7 @@ class DueDateUtilsTest {
         assertEquals("D-1", label)
     }
 
-    // DueDateUtils.spec.md Tip 32.
+    // DueDateUtils.spec.md Tip 38.
     @Test
     fun dueDateLabel_nonLeapFebruaryEndAfter_returnsDMinus2() {
         // Given
@@ -486,7 +576,7 @@ class DueDateUtilsTest {
         assertEquals("D-2", label)
     }
 
-    // DueDateUtils.spec.md Tip 33.
+    // DueDateUtils.spec.md Tip 39.
     @Test
     fun dueDateLabel_fullNonLeapYearFuture_returnsDMinus365() {
         // Given
@@ -501,7 +591,7 @@ class DueDateUtilsTest {
         assertEquals("D-365", label)
     }
 
-    // DueDateUtils.spec.md Tip 34.
+    // DueDateUtils.spec.md Tip 40.
     @Test
     fun dueDateLabel_fullNonLeapYearOverdue_returnsDPlus365() {
         // Given
@@ -516,7 +606,7 @@ class DueDateUtilsTest {
         assertEquals("D+365", label)
     }
 
-    // DueDateUtils.spec.md Tip 35.
+    // DueDateUtils.spec.md Tip 41.
     @Test
     fun dueDateLabel_fullLeapYearFuture_returnsDMinus366() {
         // Given

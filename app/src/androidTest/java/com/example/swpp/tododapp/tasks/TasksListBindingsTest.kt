@@ -18,14 +18,15 @@ import org.junit.runner.RunWith
 class TasksListBindingsTest {
     private val instrumentation = InstrumentationRegistry.getInstrumentation()
 
-    // Reading the date and binding on the UI thread keeps the interval short.
-    // Midnight-spanning calls are outside the reviewed spec; skip them explicitly.
+    // Shift each exact spec fixture by the same number of days as its reference today.
+    // This preserves day gaps and literal expected labels without changing the device clock.
+    // The unit tests exercise calendar boundaries at the exact reference dates.
 
     // TasksListBindings.spec.md Tip 1.
     @Test
     fun setDueDateLabel_nullTask_clearsTextAndHides() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
@@ -47,7 +48,7 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_activeWithoutDueDate_clearsTextAndHides() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
@@ -70,7 +71,7 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_completedWithoutDueDate_showsClear() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
@@ -93,14 +94,16 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_completedOverdue_showsClear() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
                 visibility = View.VISIBLE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = true, dueDate = today.minusDays(1))
+                isCompleted = true, dueDate = LocalDate.parse("2026-10-13").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
@@ -116,14 +119,16 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_activeDueToday_showsDDay() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
                 visibility = View.VISIBLE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = today)
+                isCompleted = false, dueDate = LocalDate.parse("2026-10-14").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
@@ -139,14 +144,16 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_activeTenDaysFuture_showsDMinus10() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
                 visibility = View.VISIBLE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = today.plusDays(10))
+                isCompleted = false, dueDate = LocalDate.parse("2026-10-24").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
@@ -162,14 +169,16 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_activeTenDaysOverdue_showsDPlus10() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
                 visibility = View.VISIBLE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = today.minusDays(10))
+                isCompleted = false, dueDate = LocalDate.parse("2026-10-04").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
@@ -185,14 +194,16 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_yesterdayBoundary_showsDPlus1() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
                 visibility = View.VISIBLE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = today.minusDays(1))
+                isCompleted = false, dueDate = LocalDate.parse("2026-10-13").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
@@ -208,14 +219,16 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_todayBoundary_showsDDay() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
                 visibility = View.VISIBLE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = today)
+                isCompleted = false, dueDate = LocalDate.parse("2026-10-14").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
@@ -231,14 +244,16 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_tomorrowBoundary_showsDMinus1() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
                 visibility = View.VISIBLE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = today.plusDays(1))
+                isCompleted = false, dueDate = LocalDate.parse("2026-10-15").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
@@ -254,23 +269,23 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_futureMonthBoundaryBefore_showsTotalDays() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
-            val due = today.plusMonths(1).minusDays(1)
-            val n = ChronoUnit.DAYS.between(today, due)
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
                 visibility = View.VISIBLE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = due)
+                isCompleted = false, dueDate = LocalDate.parse("2026-11-13").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
 
             // Then
             assumeTrue("Local date changed during binding", today == LocalDate.now())
-            assertEquals("D-$n", textView.text.toString())
+            assertEquals("D-30", textView.text.toString())
             assertEquals(View.VISIBLE, textView.visibility)
         }
     }
@@ -279,23 +294,23 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_futureMonthBoundaryAt_showsTotalDays() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
-            val due = today.plusMonths(1)
-            val n = ChronoUnit.DAYS.between(today, due)
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
                 visibility = View.VISIBLE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = due)
+                isCompleted = false, dueDate = LocalDate.parse("2026-11-14").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
 
             // Then
             assumeTrue("Local date changed during binding", today == LocalDate.now())
-            assertEquals("D-$n", textView.text.toString())
+            assertEquals("D-31", textView.text.toString())
             assertEquals(View.VISIBLE, textView.visibility)
         }
     }
@@ -304,23 +319,23 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_futureMonthBoundaryAfter_showsTotalDays() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
-            val due = today.plusMonths(1).plusDays(1)
-            val n = ChronoUnit.DAYS.between(today, due)
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
                 visibility = View.VISIBLE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = due)
+                isCompleted = false, dueDate = LocalDate.parse("2026-11-15").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
 
             // Then
             assumeTrue("Local date changed during binding", today == LocalDate.now())
-            assertEquals("D-$n", textView.text.toString())
+            assertEquals("D-32", textView.text.toString())
             assertEquals(View.VISIBLE, textView.visibility)
         }
     }
@@ -329,23 +344,23 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_overdueMonthBoundaryBefore_showsTotalDays() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
-            val due = today.minusMonths(1).minusDays(1)
-            val n = ChronoUnit.DAYS.between(due, today)
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
                 visibility = View.VISIBLE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = due)
+                isCompleted = false, dueDate = LocalDate.parse("2026-09-13").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
 
             // Then
             assumeTrue("Local date changed during binding", today == LocalDate.now())
-            assertEquals("D+$n", textView.text.toString())
+            assertEquals("D+31", textView.text.toString())
             assertEquals(View.VISIBLE, textView.visibility)
         }
     }
@@ -354,23 +369,23 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_overdueMonthBoundaryAt_showsTotalDays() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
-            val due = today.minusMonths(1)
-            val n = ChronoUnit.DAYS.between(due, today)
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
                 visibility = View.VISIBLE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = due)
+                isCompleted = false, dueDate = LocalDate.parse("2026-09-14").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
 
             // Then
             assumeTrue("Local date changed during binding", today == LocalDate.now())
-            assertEquals("D+$n", textView.text.toString())
+            assertEquals("D+30", textView.text.toString())
             assertEquals(View.VISIBLE, textView.visibility)
         }
     }
@@ -379,23 +394,23 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_overdueMonthBoundaryAfter_showsTotalDays() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
-            val due = today.minusMonths(1).plusDays(1)
-            val n = ChronoUnit.DAYS.between(due, today)
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "stale"
                 visibility = View.VISIBLE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = due)
+                isCompleted = false, dueDate = LocalDate.parse("2026-09-15").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
 
             // Then
             assumeTrue("Local date changed during binding", today == LocalDate.now())
-            assertEquals("D+$n", textView.text.toString())
+            assertEquals("D+29", textView.text.toString())
             assertEquals(View.VISIBLE, textView.visibility)
         }
     }
@@ -404,7 +419,7 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_recycledLabelToNull_clearsTextAndHides() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "D-1"
@@ -426,7 +441,7 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_recycledLabelToActiveUndated_clearsTextAndHides() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "D-1"
@@ -449,7 +464,7 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_recycledLabelToCompleted_showsClear() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
             val textView = TextView(instrumentation.targetContext).apply {
                 text = "D-1"
@@ -472,14 +487,16 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_hiddenToDated_showsDMinus1() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
+            val referenceToday = LocalDate.parse("2026-10-14")
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = ""
                 visibility = View.GONE
             }
             val task: Task? = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = today.plusDays(1))
+                isCompleted = false, dueDate = LocalDate.parse("2026-10-15").plusDays(shiftDays))
 
             // When
             setDueDateLabel(textView, task)
@@ -495,7 +512,7 @@ class TasksListBindingsTest {
     @Test
     fun setDueDateLabel_hiddenToCompletedUndated_showsClear() {
         instrumentation.runOnMainSync {
-            // Given
+            // Given - Reference today is 2026-10-14; shift the due date equally.
             val today = LocalDate.now()
             val textView = TextView(instrumentation.targetContext).apply {
                 text = ""
@@ -519,15 +536,17 @@ class TasksListBindingsTest {
     fun setDueDateLabel_visibleHiddenVisibleRebinding_replacesTextAndVisibility() {
         instrumentation.runOnMainSync {
             // Given
+            val referenceToday = LocalDate.parse("2026-10-14")
             val today = LocalDate.now()
+            val shiftDays = ChronoUnit.DAYS.between(referenceToday, today)
             val textView = TextView(instrumentation.targetContext).apply {
                 text = ""
                 visibility = View.GONE
             }
             val futureTask = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = today.plusDays(1))
+                isCompleted = false, dueDate = LocalDate.parse("2026-10-15").plusDays(shiftDays))
             val overdueTask = Task(title = "Read", description = "Chapter 1", id = "task-1",
-                isCompleted = false, dueDate = today.minusDays(1))
+                isCompleted = false, dueDate = LocalDate.parse("2026-10-13").plusDays(shiftDays))
 
             // When / Then - Check each state on the same view before rebinding it.
             setDueDateLabel(textView, futureTask)

@@ -51,6 +51,8 @@
     - Tip: Given dueDate=2026-09-14, today=2026-10-14, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D+30"
   - One-month boundary (overdue), one day after: 29 days overdue returns "D+29". `[Unit]`
     - Tip: Given dueDate=2026-09-15, today=2026-10-14, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D+29"
+  - Month end (future), one day before: a due date on January 30 is due today. `[Unit]`
+    - Tip: Given dueDate=2026-01-30, today=2026-01-30, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D-Day"
   - Month end (future), at: a due date on the last day of the month counts 1 day. `[Unit]`
     - Tip: Given dueDate=2026-01-31, today=2026-01-30, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D-1"
   - Month end (future), one day after: a due date on the first day of the next month counts 2 days. `[Unit]`
@@ -59,6 +61,10 @@
     - Tip: Given dueDate=2026-01-31, today=2026-02-01, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D+1"
   - Month end (overdue), one day before: a due date one day before the previous month end is overdue by 2. `[Unit]`
     - Tip: Given dueDate=2026-01-30, today=2026-02-01, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D+2"
+  - Month end (overdue), one day after: a due date on February 1 is due today. `[Unit]`
+    - Tip: Given dueDate=2026-02-01, today=2026-02-01, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D-Day"
+  - Year end (future), one day before: a due date on December 30 is due today. `[Unit]`
+    - Tip: Given dueDate=2026-12-30, today=2026-12-30, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D-Day"
   - Year end (future), at: a due date on December 31 counts 1 day. `[Unit]`
     - Tip: Given dueDate=2026-12-31, today=2026-12-30, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D-1"
   - Year end (future), one day after: a due date on January 1 of the next year counts 2 days. `[Unit]`
@@ -67,6 +73,8 @@
     - Tip: Given dueDate=2026-12-31, today=2027-01-01, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D+1"
   - Year end (overdue), one day before: a due date on December 30 of the previous year is overdue by 2. `[Unit]`
     - Tip: Given dueDate=2026-12-30, today=2027-01-01, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D+2"
+  - Year end (overdue), one day after: a due date on January 1 is due today. `[Unit]`
+    - Tip: Given dueDate=2027-01-01, today=2027-01-01, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D-Day"
   - Leap day (future), one day before: February 28 of a leap year counts 1 day. `[Unit]`
     - Tip: Given dueDate=2028-02-28, today=2028-02-27, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D-1"
   - Leap day (future), at: February 29 counts 2 days. `[Unit]`
@@ -77,6 +85,10 @@
     - Tip: Given dueDate=2028-02-29, today=2028-03-01, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D+1"
   - Leap day (overdue), one day before: February 28 is overdue by 2 on March 1, including February 29. `[Unit]`
     - Tip: Given dueDate=2028-02-28, today=2028-03-01, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D+2"
+  - Leap day (overdue), one day after: a due date on March 1 is due today. `[Unit]`
+    - Tip: Given dueDate=2028-03-01, today=2028-03-01, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D-Day"
+  - Non-leap February end, one day before: a due date on February 27 is due today. `[Unit]`
+    - Tip: Given dueDate=2027-02-27, today=2027-02-27, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D-Day"
   - Non-leap February end, at: February 28 counts 1 day. `[Unit]`
     - Tip: Given dueDate=2027-02-28, today=2027-02-27, isCompleted=false / When dueDateLabel(dueDate, today, isCompleted) is called / Then the returned string is "D-1"
   - Non-leap February end, one day after: March 1 counts 2 days, with no February 29. `[Unit]`
